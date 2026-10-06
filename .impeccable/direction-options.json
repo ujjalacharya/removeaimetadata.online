@@ -1,0 +1,102 @@
+{
+  "title": "Choose the visual world",
+  "question": "Choose a named direction to lock it, or re-roll again for a new set.",
+  "options": [
+    {
+      "id": "assigned",
+      "label": "Photo-Finish Rail",
+      "kicker": "THE ROLL",
+      "lineage": "finish-line slit photography and timing adjudication strips",
+      "thesis": "Each image crosses one calibrated line; the evidence alongside it determines what the app can honestly call.",
+      "palette": ["#171A1A", "#F4F0E5", "#F15A3C", "#C6E46B", "#68A4FF"],
+      "materials": ["continuous timing strip", "calibrated rail", "adjudicator marks"],
+      "viewport": "A single off-centre rail anchors the two workflow tabs, the live image, evidence ticks, and one large result plate without breaking into dashboard cards.",
+      "risk": "The timing-strip metaphor must remain subordinate to plain upload and download language.",
+      "raised": [
+        {"from": "warm consumer surface", "raise": "Every action uses friendly plain-language copy and a generous target."},
+        {"from": "lexicon plate", "raise": "Long evidence explanations keep a calm readable measure."},
+        {"from": "emission rail", "raise": "State is legible by line form as well as color."}
+      ],
+      "wireframe": {"cols": 12, "rows": 10, "regions": [
+        {"label": "brand and workflow tabs", "x": 0, "y": 0, "w": 12, "h": 1},
+        {"label": "live image strip", "x": 0, "y": 1, "w": 7, "h": 7, "accent": true},
+        {"label": "evidence ticks and result", "x": 7, "y": 1, "w": 5, "h": 7},
+        {"label": "calibrated action rail", "x": 0, "y": 8, "w": 12, "h": 2}
+      ]},
+      "comp": ".impeccable/mocks/decision/assigned-reroll-1.webp"
+    },
+    {
+      "id": "model-pick",
+      "label": "Evidence Folder",
+      "kicker": "IMPECCABLE’S PICK",
+      "lineage": "photo-editor verification folders and annotated newsroom evidence",
+      "thesis": "The app behaves like a careful picture desk: source on the left, claim and supporting notes on the right.",
+      "palette": ["#E8E1CF", "#20221E", "#A4372A", "#2C684B"],
+      "materials": ["manila stock", "editorial crop pencil", "verification slip"],
+      "viewport": "Two tabbed folder leaves hold a large image, a factual evidence column, and an explicit confidence stamp.",
+      "risk": "The editorial evidence pattern is highly legible but more familiar than the timing-rail direction.",
+      "wireframe": {"cols": 12, "rows": 10, "regions": [
+        {"label": "folder tabs", "x": 1, "y": 0, "w": 10, "h": 1},
+        {"label": "source image", "x": 1, "y": 1, "w": 7, "h": 7, "accent": true},
+        {"label": "verification notes", "x": 8, "y": 1, "w": 3, "h": 7},
+        {"label": "result stamp and action", "x": 1, "y": 8, "w": 10, "h": 2}
+      ]},
+      "comp": ".impeccable/mocks/decision/model-pick-reroll-1.webp"
+    },
+    {
+      "id": "challenger-warm-app",
+      "label": "Warm Workbench",
+      "verdict": "competitive",
+      "lineage": "a warm consumer application surface",
+      "thesis": "Two comfortable task surfaces use one action-only color and plain language from upload to result.",
+      "palette": ["#F4EFE7", "#FFFFFF", "#252421", "#6458E8"],
+      "materials": ["warm canvas", "soft work cards", "action-only color"],
+      "viewport": "A thumb-friendly tab bar sits above one generous upload surface, followed by a readable result and a persistent action area.",
+      "case": "It wins immediate familiarity but loses the assigned direction's visible evidence mechanism.",
+      "risk": "Without strict information hierarchy it could look like any other browser utility.",
+      "wireframe": {"cols": 12, "rows": 10, "regions": [
+        {"label": "friendly header and tabs", "x": 1, "y": 0, "w": 10, "h": 2},
+        {"label": "upload work surface", "x": 2, "y": 2, "w": 8, "h": 5, "accent": true},
+        {"label": "explained result", "x": 2, "y": 7, "w": 8, "h": 2},
+        {"label": "persistent action", "x": 2, "y": 9, "w": 8, "h": 1}
+      ]},
+      "hero": "https://impeccable.style/worlds/cards/digital-design-canon-warm-consumer-app-surface-hero.webp",
+      "board": "https://impeccable.style/worlds/cards/digital-design-canon-warm-consumer-app-surface.webp",
+      "comp": ".impeccable/mocks/decision/challenger-warm-app-reroll-1.webp"
+    },
+    {
+      "id": "challenger-lexicon",
+      "label": "Signal Lexicon",
+      "verdict": "declined",
+      "lineage": "a nineteenth-century lexicon with bordered color plates",
+      "thesis": "Every detected signal becomes a precise entry, while the image lives inside the only color plate on the page.",
+      "palette": ["#EEE4CD", "#171511", "#A13C2A", "#226C55", "#334E9A"],
+      "materials": ["uncoated cream stock", "engraving black", "bordered chromatic plate"],
+      "viewport": "A dense but readable evidence column faces one bordered image plate with guide words tracking the current result range.",
+      "case": "The evidence model is excellent, but the historical reading surface slows a quick one-step task.",
+      "kept": "Evidence explanations receive editorial reading quality, not utility-caption treatment.",
+      "risk": "It can make a modern privacy tool feel archival and slow.",
+      "hero": "https://impeccable.style/worlds/cards/rw-lexicon-shoulder-and-plate-hero.webp",
+      "board": "https://impeccable.style/worlds/cards/rw-lexicon-shoulder-and-plate.webp"
+    }
+  ],
+  "reroll": {"registers": ["safer", "bolder"]},
+  "buildPath": {"value": "code", "toggle": true},
+  "canon": true,
+  "canonCard": {
+    "label": "The category standard",
+    "thesis": "Two conventional tabs, a centered dropzone, a privacy line, and a result card.",
+    "palette": ["#FFFFFF", "#111827", "#2563EB"],
+    "materials": ["clean application grid", "neutral utility panels"],
+    "viewport": "A familiar header, tab switcher, upload box, and blue primary action.",
+    "risk": "Immediately understandable, but interchangeable with other image utilities.",
+    "wireframe": {"cols": 12, "rows": 10, "regions": [
+      {"label": "header and tabs", "x": 1, "y": 0, "w": 10, "h": 2},
+      {"label": "upload card", "x": 2, "y": 2, "w": 8, "h": 5, "accent": true},
+      {"label": "result card", "x": 2, "y": 7, "w": 8, "h": 2},
+      {"label": "primary action", "x": 4, "y": 9, "w": 4, "h": 1}
+    ]},
+    "comp": ".impeccable/mocks/decision/canon-reroll-1.webp"
+  },
+  "steer": true
+}
