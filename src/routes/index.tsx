@@ -13,6 +13,7 @@ import {
   Upload,
   X,
 } from 'lucide-react'
+import { usePostHog } from 'posthog-js/react'
 import { useEffect, useId, useRef, useState, type KeyboardEvent } from 'react'
 import {
   cleanImage,
@@ -25,8 +26,11 @@ import {
 export const Route = createFileRoute('/')({ component: ImageEvidenceDesk })
 
 type Mode = 'clean' | 'scan'
+type ImageInputMethod = 'file_picker' | 'drag_and_drop'
 
 function ImageEvidenceDesk() {
+  const posthog = usePostHog()
+  const imageProcessingLogger = posthog?.logger
   const [mode, setMode] = useState<Mode>('clean')
   const [file, setFile] = useState<File | null>(null)
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
@@ -47,7 +51,7 @@ function ImageEvidenceDesk() {
     }
   }, [previewUrl, cleaned])
 
-  async function loadFile(nextFile: File) {
+  async function loadFile(nextFile: File, inputMethod: ImageInputMethod) {
     setError(null)
     setStatus('reading')
     setInspection(null)
@@ -60,13 +64,30 @@ function ImageEvidenceDesk() {
       const nextInspection = await inspectImage(nextFile)
       setInspection(nextInspection)
       setStatus('ready')
+      const logAttributes = {
+        mode,
+        input_method: inputMethod,
+        image_type: nextFile.type,
+        file_size_bucket: nextFile.size <= 1024 * 1024 ? 'under_1_mb' : '1_to_25_mb',
+      }
+      imageProcessingLogger?.info('image inspection completed', logAttributes)
+      posthog?.capture('image_inspection_completed', logAttributes)
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : 'This image could not be read.')
       setStatus('idle')
+      const logAttributes = {
+        mode,
+        input_method: inputMethod,
+      }
+      imageProcessingLogger?.warn('image inspection failed', logAttributes)
+      posthog?.capture('image_inspection_failed', logAttributes)
     }
   }
 
   function switchMode(nextMode: Mode) {
+    if (nextMode !== mode) {
+      posthog?.capture('tool_mode_selected', { selected_mode: nextMode })
+    }
     setMode(nextMode)
     setError(null)
     setCleaned((current) => {
@@ -113,10 +134,27 @@ function ImageEvidenceDesk() {
       if (cleaned) URL.revokeObjectURL(cleaned.url)
       setCleaned({ blob, url: URL.createObjectURL(blob) })
       setStatus('ready')
+      const logAttributes = {
+        input_image_type: file.type,
+        output_image_type: blob.type || file.type,
+      }
+      imageProcessingLogger?.info('metadata cleanup completed', logAttributes)
+      posthog?.capture('metadata_cleanup_completed', logAttributes)
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : 'The image could not be cleaned.')
       setStatus('ready')
+      imageProcessingLogger?.warn('metadata cleanup failed')
+      posthog?.capture('metadata_cleanup_failed')
     }
+  }
+
+  function handleDownload() {
+    if (!file || !cleaned) return
+    const logAttributes = {
+      output_image_type: cleaned.blob.type || file.type,
+    }
+    imageProcessingLogger?.info('cleaned image downloaded', logAttributes)
+    posthog?.capture('cleaned_image_downloaded', logAttributes)
   }
 
   const liveMessage = error
@@ -232,7 +270,7 @@ function ImageEvidenceDesk() {
                     event.preventDefault()
                     setDragging(false)
                     const dropped = event.dataTransfer.files[0]
-                    if (dropped) void loadFile(dropped)
+                    if (dropped) void loadFile(dropped, 'drag_and_drop')
                   }}
                 >
                   <span className="upload-seal"><Upload size={28} aria-hidden="true" /></span>
@@ -249,7 +287,7 @@ function ImageEvidenceDesk() {
                 accept="image/jpeg,image/png,image/webp"
                 onChange={(event) => {
                   const selected = event.target.files?.[0]
-                  if (selected) void loadFile(selected)
+                  if (selected) void loadFile(selected, 'file_picker')
                 }}
               />
             </section>
@@ -263,6 +301,7 @@ function ImageEvidenceDesk() {
               error={error}
               onChoose={() => inputRef.current?.click()}
               onClean={handleClean}
+              onDownload={handleDownload}
             />
           </div>
         </div>
@@ -284,9 +323,10 @@ type EvidenceSlipProps = {
   error: string | null
   onChoose: () => void
   onClean: () => void
+  onDownload: () => void
 }
 
-function EvidenceSlip({ mode, file, inspection, cleaned, status, error, onChoose, onClean }: EvidenceSlipProps) {
+function EvidenceSlip({ mode, file, inspection, cleaned, status, error, onChoose, onClean, onDownload }: EvidenceSlipProps) {
   if (error) {
     return (
       <aside className="evidence-slip error-slip" aria-label="Image error">
@@ -387,7 +427,7 @@ function EvidenceSlip({ mode, file, inspection, cleaned, status, error, onChoose
               <strong>Ready</strong>
               <p>{formatBytes(cleaned.blob.size)}</p>
             </div>
-            <a className="primary-action" href={cleaned.url} download={cleanedFilename(file)}>
+            <a className="primary-action" href={cleaned.url} download={cleanedFilename(file)} onClick={onDownload}>
               <Download size={18} aria-hidden="true" /> Download
             </a>
           </div>
